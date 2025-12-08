@@ -9,14 +9,14 @@
 class Merge {
   public static void main(String[] args) {
 
-    int size = 10;
+    int size = 16;
     int[] nums = new int[size];
 
     nums = populateArray(size);
 
     printArr(nums);
 
-    merge(nums);
+    nums = merge(nums);
 
     printArr(nums);
   }
@@ -24,8 +24,8 @@ class Merge {
   public static int[] populateArray(int size) {
     int[] arr = new int[size];
 
-    for (int i = 0; i < 10; i++) {
-      arr[i] = (int) (Math.random() * 100);
+    for (int i = 0; i < size; i++) {
+      arr[i] = (int) (Math.random() * 1000);
     }
 
     return arr;
@@ -40,43 +40,73 @@ class Merge {
 
   }
 
-  public static void merge(int[] arr) {
+  public static int[] sort(int[] l, int[] u) {
+    int[] s_arr = new int[l.length + u.length];
 
-    int temp;
+    // printArr(l);
+    // printArr(u);
+
+    int spos = 0;
+    int lpos = 0;
+    int upos = 0;
+
+    while (lpos < l.length && upos < u.length) {
+      if (l[lpos] < u[upos]) {
+        s_arr[spos] = l[lpos];
+        lpos++;
+      } else {
+        s_arr[spos] = u[upos];
+        upos++;
+      }
+      spos++;
+    }
+
+    while (lpos < l.length) {
+      s_arr[spos] = l[lpos];
+      lpos++;
+      spos++;
+    }
+
+    while (upos < u.length) {
+      s_arr[spos] = u[upos];
+      upos++;
+      spos++;
+    }
+    printArr(s_arr);
+    return s_arr;
+  }
+
+  public static int[] merge(int[] arr) {
 
     if (arr.length < 2) {
-      return;
+      return arr;
     }
-    if (arr.length == 2) {
-      if (arr[1] < arr[0]) {
-        temp = arr[0];
-        arr[0] = arr[1];
-        arr[1] = temp;
+
+    else {
+      int mid = arr.length / 2;
+      int[] lower = new int[mid];
+      int[] upper = new int[arr.length - mid];
+
+      // copy lower half
+      for (int i = 0; i < mid; i++) {
+        lower[i] = arr[i];
       }
-      return;
+
+      // printArr(lower);
+
+      // copy upper half
+      for (int i = mid; i < arr.length; i++) {
+        upper[i - mid] = arr[i];
+
+      }
+      // printArr(upper);
+
+      // recurse
+      lower = merge(lower);
+      upper = merge(upper);
+
+      return sort(lower, upper);
     }
-
-    int mid = arr.length / 2;
-    int[] lower = new int[mid];
-    int[] upper = new int[arr.length - mid];
-
-    // copy lower half
-    for (int i = 0; i < mid; i++) {
-      lower[i] = arr[i];
-    }
-
-    printArr(lower);
-
-    // copy upper half
-    for (int i = mid; i < arr.length; i++) {
-      upper[i - mid] = arr[i];
-
-    }
-    printArr(upper);
-
-    // recurse
-    merge(lower);
-    merge(upper);
 
   }
 }
